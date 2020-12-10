@@ -25,13 +25,14 @@ public class Cliente extends JFrame implements ActionListener, KeyListener{
     private JLabel lblHistorico;
     private JLabel lblMsg;
     private JPanel pnlContent;
+    private JTextField txtIP;
+    private JTextField txtPorta;
+    private JTextField txtNome;
+    
     private Socket socket;
     private OutputStream ou ;
     private Writer ouw;
     private BufferedWriter bfw;
-    private JTextField txtIP;
-    private JTextField txtPorta;
-    private JTextField txtNome;
 
     public Cliente() throws IOException {
         JLabel lblMessage = new JLabel("Verificar!");
@@ -74,6 +75,14 @@ public class Cliente extends JFrame implements ActionListener, KeyListener{
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
+    
+    
+        public static void main(String []args) throws IOException{
+
+        Cliente app = new Cliente();
+        app.conectar();
+        app.escutar();
+        }
 
         public void conectar() throws IOException{
 
@@ -84,20 +93,9 @@ public class Cliente extends JFrame implements ActionListener, KeyListener{
             bfw.write(txtNome.getText()+"\r\n");
             bfw.flush();
         }
-
-    public void enviarMensagem(String msg) throws IOException{
-
-        if(msg.equals("Sair")){
-            bfw.write(txtNome.getText() + " desconectou. \r\n");
-            texto.append("Você saiu. \r\n");
-        }else{
-            bfw.write(msg+"\r\n");
-            texto.append( txtNome.getText() + " diz -> " + txtMsg.getText()+"\r\n");
-        }
-        bfw.flush();
-        txtMsg.setText("");
-    }
-
+        
+        
+        
     public void escutar() throws IOException{
 
         InputStream in = socket.getInputStream();
@@ -115,6 +113,21 @@ public class Cliente extends JFrame implements ActionListener, KeyListener{
                     texto.append(msg+"\r\n");
             }
     }
+
+    public void enviarMensagem(String msg) throws IOException{
+
+        if(msg.equals("Sair")){
+            bfw.write(txtNome.getText() + " desconectou. \r\n");
+            texto.append("Você saiu. \r\n");
+        }else{
+            bfw.write(msg+"\r\n");
+            if(txtMsg.getText() != null)
+            texto.append( txtNome.getText() + " diz -> " + txtMsg.getText()+"\r\n");
+        }
+        bfw.flush();
+        txtMsg.setText("");
+    }
+
 
     public void sair() throws IOException{
 
@@ -138,14 +151,6 @@ public class Cliente extends JFrame implements ActionListener, KeyListener{
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-    }
-
-
-    public static void main(String []args) throws IOException{
-
-        Cliente app = new Cliente();
-        app.conectar();
-        app.escutar();
     }
 
     @Override
